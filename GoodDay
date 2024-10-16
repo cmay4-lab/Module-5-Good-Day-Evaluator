@@ -13,7 +13,7 @@ public class GoodDay {
     /**
      * 
      * getTemperature --- Gets temperature.
-     * @return           temperature
+     * @return            temperature
      */
     public int getTemperature() {
 
