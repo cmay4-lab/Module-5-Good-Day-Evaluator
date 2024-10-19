@@ -5,7 +5,7 @@
  */
 public class GoodDay {
 
-    private int temperature;            // Stores temperature in Fahrenheit.
+    private int temperature;             // Stores temperature in Celsius.
     private double humidity;            // Stores humidity.
     private boolean isHomeworkDone;     // Stores whether homework is done or not.
     private String dinnerMeal;          // Stores dinner meal name.
@@ -13,7 +13,7 @@ public class GoodDay {
     /**
      * 
      * getTemperature --- Gets temperature.
-     * @return           temperature
+     * @return            temperature
      */
     public int getTemperature() {
 

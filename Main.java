@@ -1,4 +1,9 @@
+import java.lang.Math;
+
 public class Main {
+
+    private static int userPreferredTemperature;
+    private static double userPreferredHumidity;
 
     // https://en.wikipedia.org/wiki/Dew_point
     // Calculating the dew point
@@ -7,9 +12,47 @@ public class Main {
     // Florida's Yearly average temperature is 73 degrees F (rounded)
     // I will make these constants so I wont have to factor in locational/psychological factors.
 
-    private static void isWeatherGood() {
+    private static double getDewPointTemperature(int temperature, double humidity) {
+
+        final double DEW_POINT_MULTIPLYING_CONSTANT = 17.625;
+        final double DEW_POINT_SUMMING_CONSTANT = 243.04;
+
+        double magnusFunctionResult = Math.log(humidity/100) + ((DEW_POINT_MULTIPLYING_CONSTANT * temperature) / (DEW_POINT_SUMMING_CONSTANT + temperature));
+        double dewPointTemperature = (DEW_POINT_SUMMING_CONSTANT * magnusFunctionResult) / (DEW_POINT_MULTIPLYING_CONSTANT - magnusFunctionResult);
+
+        return dewPointTemperature;
 
     }
+    
+
+    private static boolean isTodayGood() {
+
+
+
+        return false;
+    }
+
+
+    private static boolean isWeatherGood() {
+    
+        if (userPreferredTemperature instanceof int)
+        
+
+        boolean weatherIsGood = false;
+
+        if (.) {
+
+            weatherIsGood = false;
+
+        } 
+
+
+
+
+        return false;
+    }
+
+    
 
 
 
