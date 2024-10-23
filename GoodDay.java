@@ -5,10 +5,12 @@
  */
 public class GoodDay {
 
-    private int temperature;             // Stores temperature in Celsius.
-    private double humidity;            // Stores humidity.
-    private boolean isHomeworkDone;     // Stores whether homework is done or not.
-    private String dinnerMeal;          // Stores dinner meal name.
+    private int temperature;                // Stores temperature in Celsius.
+    private double humidity;                // Stores humidity.
+    private boolean isHomeworkDone;         // Stores whether homework is done or not.
+    private String dinnerMeal;              // Stores dinner meal name.
+    private int preferredTemperature;       // Stores the preferred temperature.
+    private double preferredHumidity;       // Stores the preferred humidity.
 
     /**
      * 
@@ -55,6 +57,28 @@ public class GoodDay {
     }
 
     /**
+     *
+     * getPreferredTemperature --- Gets the preferred temperature of the user.
+     * @return                     preferredTemperature
+     */
+    public int getPreferredTemperature() {
+
+        return preferredTemperature;
+
+    }
+
+    /**
+     *
+     * getPreferredHumidity --- Gets the preferred humidity of the user.
+     * @return
+     */
+    public double getPreferredHumidity() {
+
+        return preferredHumidity;
+
+    }
+
+    /**
      * 
      * setTemperature --- Sets temperature to equal the new temperature.
      * @param             newTemperature
@@ -95,6 +119,28 @@ public class GoodDay {
     public void setDinnerMeal(String newDinnerMeal) {
         
         dinnerMeal = newDinnerMeal;
+
+    }
+
+    /**
+     *
+     * setPreferredTemperature --- Sets the preferred temperature to equal a new temperature.
+     * @param                      newPreferredTemperature
+     */
+    public void setPreferredTemperature(int newPreferredTemperature) {
+
+        preferredTemperature = newPreferredTemperature;
+
+    }
+
+    /**
+     *
+     * getPreferredHumidity --- Gets the preferred humidity of the user.
+     * @param                   newPreferredHumidity
+     */
+    public void setPreferredHumidity(double newPreferredHumidity) {
+
+        preferredHumidity = newPreferredHumidity;
 
     }
 

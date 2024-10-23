@@ -2,30 +2,24 @@ import java.lang.Math;
 
 public class Main {
 
-    private static int userPreferredTemperature;
-    private static double userPreferredHumidity;
-
     // https://en.wikipedia.org/wiki/Dew_point
     // Calculating the dew point
     // The dew-point temperature is a relation between the actual "dry bulb" temperature (T) and the relative humidity (RH)
-    // Florida's Yearly average humidity is 75%
-    // Florida's Yearly average temperature is 73 degrees F (rounded)
-    // I will make these constants so I wont have to factor in locational/psychological factors.
 
     private static double getDewPointTemperature(int temperature, double humidity) {
 
         final double DEW_POINT_MULTIPLYING_CONSTANT = 17.625;
         final double DEW_POINT_SUMMING_CONSTANT = 243.04;
 
-        double magnusFunctionResult = Math.log(humidity/100) + ((DEW_POINT_MULTIPLYING_CONSTANT * temperature) / (DEW_POINT_SUMMING_CONSTANT + temperature));
-        double dewPointTemperature = (DEW_POINT_SUMMING_CONSTANT * magnusFunctionResult) / (DEW_POINT_MULTIPLYING_CONSTANT - magnusFunctionResult);
+        double magnusOutput = Math.log(humidity / 100) + ( (DEW_POINT_MULTIPLYING_CONSTANT * temperature) / (DEW_POINT_SUMMING_CONSTANT + temperature) );
+        double dewPointTemperature = (DEW_POINT_SUMMING_CONSTANT * magnusOutput) / (DEW_POINT_MULTIPLYING_CONSTANT - magnusOutput);
 
         return dewPointTemperature;
 
     }
     
 
-    private static boolean isTodayGood() {
+    private static boolean isTodayGood(GoodDay goodDayEvaluator) {
 
 
 
@@ -33,23 +27,19 @@ public class Main {
     }
 
 
-    private static boolean isWeatherGood() {
-    
-        if (userPreferredTemperature instanceof int)
-        
+    private static boolean isWeatherGood(GoodDay goodDayEvaluator) {
 
-        boolean weatherIsGood = false;
+        double currentTemperature = goodDayEvaluator.getTemperature();
+        double currentHumidity = goodDayEvaluator.getHumidity();
 
-        if (.) {
+        double preferredTemperature = goodDayEvaluator.getPreferredTemperature();
+        double preferredHumidity = goodDayEvaluator.getPreferredHumidity();
 
-            weatherIsGood = false;
-
-        } 
-
-
-
+        double neutralTemperature = (currentTemperature + preferredTemperature) / 2;
+        double neutralHumidity = (currentHumidity + preferredHumidity) / 2;
 
         return false;
+
     }
 
     
