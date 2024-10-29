@@ -158,6 +158,8 @@ public class GoodDay {
         humidity = 0;
         isHomeworkDone = false;
         dinnerMeal = "";
+        preferredTemperature = 0;
+        preferredHumidity = 0;
 
     }
 
@@ -169,13 +171,15 @@ public class GoodDay {
      * @param      inputIsHomeworkDone
      * @param      inputDinnerMeal
      */
-    public GoodDay(int inputTemperature, double inputHumidity, boolean inputIsHomeworkDone, String inputDinnerMeal) {
+    public GoodDay(int inputTemperature, double inputHumidity, boolean inputIsHomeworkDone, String inputDinnerMeal, int inputPreferredTemperature, double inputPreferredHumidity) {
 
         temperature = inputTemperature;
         humidity = inputHumidity;
         isHomeworkDone = inputIsHomeworkDone;
         dinnerMeal = inputDinnerMeal;
-
+        preferredTemperature = inputPreferredTemperature;
+        preferredHumidity = inputPreferredHumidity;
+        
     }
 
 }
