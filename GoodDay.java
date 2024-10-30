@@ -5,6 +5,13 @@
  */
 public class GoodDay {
 
+    // Static Constants to what makes a "good day"
+    public static final int HABITABLE_TEMPERATURE_LOWER_LIMIT = 0;
+    public static final int HABITABLE_TEMPERATURE_UPPER_LIMIT = 40;
+    public static final double HABITABLE_HUMIDITY_LOWER_LIMIT = 0;
+    public static final double HABITABLE_HUMIDITY_UPPER_LIMIT = 100;
+    
+
     private int temperature;                // Stores temperature in Celsius.
     private double humidity;                // Stores humidity.
     private boolean isHomeworkDone;         // Stores whether homework is done or not.

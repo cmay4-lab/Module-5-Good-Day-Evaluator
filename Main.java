@@ -26,19 +26,99 @@ public class Main {
         return false;
     }
 
+    private static boolean isWeatherInhabitable(int temperature, double humidity) {
+
+        boolean weatherIsInhabitable;
+
+        boolean temperatureIsInhabitable = temperature <= GoodDay.HABITABLE_TEMPERATURE_LOWER_LIMIT || temperature >= GoodDay.HABITABLE_TEMPERATURE_UPPER_LIMIT;
+        boolean humidityIsInhabitable = humidity <= GoodDay.HABITABLE_HUMIDITY_LOWER_LIMIT || humidity >= GoodDay.HABITABLE_HUMIDITY_UPPER_LIMIT;
+        
+        if (temperatureIsInhabitable || humidityIsInhabitable) {
+
+            weatherIsInhabitable = true;
+
+        } else {
+
+            weatherIsInhabitable = false;
+
+        }
+        
+        return weatherIsInhabitable;
+
+    }
 
     private static boolean isWeatherGood(GoodDay goodDayEvaluator) {
 
-        double currentTemperature = goodDayEvaluator.getTemperature();
-        double currentHumidity = goodDayEvaluator.getHumidity();
+        boolean weatherIsGood;
 
-        double preferredTemperature = goodDayEvaluator.getPreferredTemperature();
-        double preferredHumidity = goodDayEvaluator.getPreferredHumidity();
+        int temperature = goodDayEvaluator.getTemperature();
+        double humidity = goodDayEvaluator.getHumidity();
 
-        double neutralTemperature = (currentTemperature + preferredTemperature) / 2;
-        double neutralHumidity = (currentHumidity + preferredHumidity) / 2;
+        if (isWeatherInhabitable(temperature, humidity)) {
 
-        return false;
+            weatherIsGood = false;
+
+        } else {
+
+            int preferredTemperature = goodDayEvaluator.getPreferredTemperature();
+            double preferredHumidity = goodDayEvaluator.getPreferredHumidity();
+
+            double dewPointTemperature = getDewPointTemperature(temperature, humidity);
+            double preferredDewPointTemperature = getDewPointTemperature(preferredTemperature, preferredHumidity);
+
+            if (dewPointTemperature == preferredDewPointTemperature) {
+
+                weatherIsGood = true;
+
+            } else {
+
+                final double MINIMUM_DEW_POINT_TEMPERATURE = getDewPointTemperature(GoodDay.HABITABLE_TEMPERATURE_LOWER_LIMIT, GoodDay.HABITABLE_HUMIDITY_LOWER_LIMIT);
+                final double MAXIMUM_DEW_POINT_TEMPERATURE = getDewPointTemperature(GoodDay.HABITABLE_TEMPERATURE_UPPER_LIMIT, GoodDay.HABITABLE_HUMIDITY_UPPER_LIMIT);
+                
+                double levelOfDiscomfort;
+                double levelOfSafety;
+
+                if (preferredDewPointTemperature <= MINIMUM_DEW_POINT_TEMPERATURE || preferredDewPointTemperature >= MAXIMUM_DEW_POINT_TEMPERATURE) {
+
+                    weatherIsGood = false;
+
+                } else if (dewPointTemperature > preferredDewPointTemperature) {
+
+                    levelOfDiscomfort = dewPointTemperature - preferredDewPointTemperature;
+                    levelOfSafety = preferredDewPointTemperature - MINIMUM_DEW_POINT_TEMPERATURE;
+
+                    if (levelOfSafety > levelOfDiscomfort) {
+
+                        weatherIsGood = true;
+    
+                    } else {
+    
+                        weatherIsGood = false;
+    
+                    }
+
+                } else {
+
+                    levelOfDiscomfort = preferredDewPointTemperature - dewPointTemperature;
+                    levelOfSafety = MAXIMUM_DEW_POINT_TEMPERATURE - preferredDewPointTemperature;
+
+                    if (levelOfSafety > levelOfDiscomfort) {
+
+                        weatherIsGood = true;
+    
+                    } else {
+    
+                        weatherIsGood = false;
+    
+                    }
+
+                }
+
+            }
+
+        }
+
+        return weatherIsGood;
 
     }
 
