@@ -17,9 +17,25 @@ public class Main {
         return dewPointTemperature;
 
     }
-    
 
     private static boolean isTodayGood(GoodDay goodDayEvaluator) {
+
+        int happinessLevel = 0
+
+
+
+        if (isWeatherGood(goodDayEvaluator)) {
+
+            ++happinessLevel;
+
+        }
+
+        if (isSchoolGood(goodDayEvaluator)) {
+
+            ++happinessLevel;
+
+        }
+
 
 
 
@@ -122,11 +138,23 @@ public class Main {
 
     }
 
-    
+    private static boolean isFoodGood(GoodDay goodDayEvaluator) {
 
+        boolean foodIsGood = true;
 
+        String favoriteMeal = goodDayEvaluator.getFavoriteDinnerMeal();
+        String leastFavoriteMeal = goodDayEvaluator.getLeastFavoriteMeal();
+        String dinnerMeal = goodDayEvaluator.getDinnerMeal();
 
+        if (dinnerMeal.isBlank() || dinnerMeal.equalsIgnoreCase(leastFavoriteMeal)) {
 
+            foodIsGood = false;
+
+        }
+
+        return foodIsGood;
+
+    }
 
     public static void main(String[] args) {
 
@@ -137,10 +165,6 @@ public class Main {
         // extreme, they are likely having a bad day...
 
         GoodDay goodDay = new GoodDay();    // Instantiates a blank GoodDay object to test the default constructor.
-
-
-
-
 
     }
 
