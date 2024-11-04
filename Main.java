@@ -43,13 +43,17 @@ public class Main {
 
         if (isFoodGood(goodDayEvaluator)) {
 
-            if (goodDayEvaluator.getFavoriteDinnerMeal() == goodDayEvaluator.getDinnerMeal()) {
+            if (!goodDayEvaluator.getDinnerMeal().isBlank()) {
 
-                happinessLevel++;
+                if (goodDayEvaluator.getFavoriteDinnerMeal() == goodDayEvaluator.getDinnerMeal()) {
 
-            } else {
-
-                happinessLevel += 0.5;
+                    happinessLevel++;
+    
+                } else {
+    
+                    happinessLevel += 0.5;
+    
+                }
 
             }
 
@@ -77,9 +81,9 @@ public class Main {
 
         }
 
-        double happinessPercent = (100*happinessLevel) / 3;
+        double happinessPercent = (100*happinessLevel) / 4;
 
-        if (happinessPercent >= 2/3) {
+        if (happinessPercent == 0) {
 
             todayIsGood = true;
 
