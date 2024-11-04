@@ -12,14 +12,14 @@ public class GoodDay {
     public static final double HABITABLE_HUMIDITY_UPPER_LIMIT = 100;    // Stores the percent of humidity that disables the human body's ability to sweat (eventually causing failure of homeostasis).
 
     private int temperature;                    // Stores temperature in Celsius.
-    private double humidity;                    // Stores humidity.
+    private double humidity;                    // Stores humidity in percent.
     private boolean isHomeworkDone;             // Stores whether homework is done or not.
-    private String homeworkDifficulty;            // Stores the difficulty of the homework
+    private String homeworkDifficulty;          // Stores the difficulty of the homework
     private String dinnerMeal;                  // Stores dinner meal name.
     private String favoriteDinnerMeal;          // Stores the name of the user's favorite dinner meal.
     private String leastFavoriteDinnerMeal;     // Stores the name of the user's least favorite dinner meal.
-    private int preferredTemperature;           // Stores the preferred temperature.
-    private double preferredHumidity;           // Stores the preferred humidity.
+    private int preferredTemperature;           // Stores the preferred temperature in Celsius.
+    private double preferredHumidity;           // Stores the preferred humidity in percent.
 
     /**
      * 
