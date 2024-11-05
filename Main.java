@@ -8,6 +8,53 @@ public class Main {
         Source: https://en.wikipedia.org/wiki/Dew_point
     */
 
+    private static boolean isWeatherInhabitable(int temperature, double humidity) {
+
+        final int[] HABITABLE_TEMPERATURES_DOMAIN = {GoodDay.HABITABLE_TEMPERATURE_LOWER_LIMIT, GoodDay.HABITABLE_TEMPERATURE_UPPER_LIMIT};
+        final double[] HABITABLE_HUMIDITY_DOMAIN = {GoodDay.HABITABLE_HUMIDITY_LOWER_LIMIT, GoodDay.HABITABLE_HUMIDITY_UPPER_LIMIT};
+
+        boolean weatherIsInhabitable;
+
+        if (temperature < HABITABLE_TEMPERATURES_DOMAIN[0] || HABITABLE_HUMIDITY_DOMAIN[1] < temperature) {
+
+            weatherIsInhabitable = true;
+            
+
+        } else if (humidity < HABITABLE_HUMIDITY_DOMAIN[0] || HABITABLE_HUMIDITY_DOMAIN[1] < humidity) {
+
+            weatherIsInhabitable = true;
+
+        } else {
+
+            weatherIsInhabitable = false;
+
+        }
+        
+        return weatherIsInhabitable;
+
+    }
+
+    private static boolean isWeatherNormal(GoodDay goodDayEvaluator) {
+
+        final boolean WEATHER_IS_INHABITABLE = isWeatherInhabitable(goodDayEvaluator.getTemperature(), goodDayEvaluator.getHumidity());
+        final boolean USER_IS_CRAZY = isWeatherInhabitable(goodDayEvaluator.getPreferredTemperature(), goodDayEvaluator.getPreferredHumidity());
+
+        boolean weatherIsNormal;
+
+        if (WEATHER_IS_INHABITABLE || USER_IS_CRAZY) {
+
+            weatherIsNormal = false;
+
+        } else {
+
+
+            weatherIsNormal = true;
+
+        }
+
+        return weatherIsNormal;
+    }
+
     private static double getDewPointTemperature(int temperature, double humidity) {
 
         final double DEW_POINT_MULTIPLYING_CONSTANT = 17.625;
@@ -30,111 +77,25 @@ public class Main {
 
     }
 
-    private static boolean isTodayGood(GoodDay goodDayEvaluator) {
-
-        boolean todayIsGood;
-        int happinessLevel = 0;
-
-        if (isWeatherGood(goodDayEvaluator)) {
-
-            happinessLevel++;
-
-        }
-
-        if (isFoodGood(goodDayEvaluator)) {
-
-            if (!goodDayEvaluator.getDinnerMeal().isBlank()) {
-
-                if (goodDayEvaluator.getFavoriteDinnerMeal() == goodDayEvaluator.getDinnerMeal()) {
-
-                    happinessLevel++;
-    
-                } else {
-    
-                    happinessLevel += 0.5;
-    
-                }
-
-            }
-
-        }
-
-        if (goodDayEvaluator.getIsHomeworkDone()) {
-
-            happinessLevel++;
-
-        } else {
-
-            double mostLikelyHomeworkGrade = 1;
-
-            switch (goodDayEvaluator.getHomeworkDifficulty()) {
-    
-                case "Easy" -> mostLikelyHomeworkGrade = 0.9;
-                case "Medium" -> mostLikelyHomeworkGrade = 0.8;
-                case "Hard" -> mostLikelyHomeworkGrade = 0.7;
-                case "Very Hard" -> mostLikelyHomeworkGrade = 0.6;
-                default -> mostLikelyHomeworkGrade = 1;
-    
-            }
-
-            happinessLevel += mostLikelyHomeworkGrade * 0.3;
-
-        }
-
-        double happinessPercent = (100*happinessLevel) / 4;
-
-        if (happinessPercent == 0) {
-
-            todayIsGood = true;
-
-        } else {
-
-            todayIsGood = false;
-
-        }
-
-        return todayIsGood;
-    }
-
-    private static boolean isWeatherInhabitable(int temperature, double humidity) {
-
-        boolean weatherIsInhabitable;
-
-        boolean temperatureIsInhabitable = temperature <= GoodDay.HABITABLE_TEMPERATURE_LOWER_LIMIT || temperature >= GoodDay.HABITABLE_TEMPERATURE_UPPER_LIMIT;
-        boolean humidityIsInhabitable = humidity <= GoodDay.HABITABLE_HUMIDITY_LOWER_LIMIT || humidity >= GoodDay.HABITABLE_HUMIDITY_UPPER_LIMIT;
-        
-        if (temperatureIsInhabitable || humidityIsInhabitable) {
-
-            weatherIsInhabitable = true;
-
-        } else {
-
-            weatherIsInhabitable = false;
-
-        }
-        
-        return weatherIsInhabitable;
-
-    }
-
     private static boolean isWeatherGood(GoodDay goodDayEvaluator) {
 
         boolean weatherIsGood;
 
-        int temperature = goodDayEvaluator.getTemperature();
-        double humidity = goodDayEvaluator.getHumidity();
-
-        if (isWeatherInhabitable(temperature, humidity)) {
+        if (isWeatherInhabitable(goodDayEvaluator.getTemperature(), goodDayEvaluator.getHumidity())) {
 
             weatherIsGood = false;
 
         } else {
 
-            int preferredTemperature = goodDayEvaluator.getPreferredTemperature();
-            double preferredHumidity = goodDayEvaluator.getPreferredHumidity();
+            final double CURRENT_DEW_POINT_TEMPERATURE = getDewPointTemperature(goodDayEvaluator.getTemperature(), goodDayEvaluator.getHumidity());
 
-            double dewPointTemperature = getDewPointTemperature(temperature, humidity);
-            double preferredDewPointTemperature = getDewPointTemperature(preferredTemperature, preferredHumidity);
+            
+
+            final int PREFERRED_TEMPERATURE = goodDayEvaluator.getPreferredTemperature();
+            final double PREFERRED_HUMIDITY = goodDayEvaluator.getPreferredHumidity();
+
+            
+            final double PREFERRED_DEW_POINT_TEMPERATURE = getDewPointTemperature(PREFERRED_TEMPERATURE, PREFERRED_HUMIDITY);
 
             if (dewPointTemperature == preferredDewPointTemperature) {
 
@@ -207,6 +168,92 @@ public class Main {
 
         return foodIsGood;
 
+    }
+
+    private static boolean isTodayGood(GoodDay goodDayEvaluator) {
+
+        int happinessLevel;
+
+        final boolean WEATHER_IS_NOT_NORMAL = !isWeatherNormal(goodDayEvaluator);
+
+        if (WEATHER_IS_NOT_NORMAL) {
+
+            happinessLevel = 0;
+
+        } else {
+
+            final boolean WEATHER_IS_GOOD = isWeatherGood(goodDayEvaluator);
+            final boolean FOOD_IS_GOOD = isFoodGood(goodDayEvaluator);
+
+
+            if (WEATHER_IS_GOOD) {
+
+                happinessLevel++;
+
+            }
+
+
+        }
+
+        if (isWeatherGood(goodDayEvaluator)) {
+
+            happinessLevel++;
+
+        }
+
+        if (isFoodGood(goodDayEvaluator)) {
+
+            if (!goodDayEvaluator.getDinnerMeal().isBlank()) {
+
+                if (goodDayEvaluator.getFavoriteDinnerMeal() == goodDayEvaluator.getDinnerMeal()) {
+
+                    happinessLevel++;
+    
+                } else {
+    
+                    happinessLevel += 0.5;
+    
+                }
+
+            }
+
+        }
+
+        if (goodDayEvaluator.getIsHomeworkDone()) {
+
+            happinessLevel++;
+
+        } else {
+
+            double mostLikelyHomeworkGrade = 1;
+
+            switch (goodDayEvaluator.getHomeworkDifficulty()) {
+    
+                case "Easy" -> mostLikelyHomeworkGrade = 0.9;
+                case "Medium" -> mostLikelyHomeworkGrade = 0.8;
+                case "Hard" -> mostLikelyHomeworkGrade = 0.7;
+                case "Very Hard" -> mostLikelyHomeworkGrade = 0.6;
+                default -> mostLikelyHomeworkGrade = 1;
+    
+            }
+
+            happinessLevel += mostLikelyHomeworkGrade * 0.3;
+
+        }
+
+        double happinessPercent = (100*happinessLevel) / 4;
+
+        if (happinessPercent == 0) {
+
+            todayIsGood = true;
+
+        } else {
+
+            todayIsGood = false;
+
+        }
+
+        return todayIsGood;
     }
 
     public static void main(String[] args) {
