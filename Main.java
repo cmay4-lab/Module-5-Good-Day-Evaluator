@@ -57,8 +57,12 @@ public class Main {
 
     private static double getDewPointTemperature(int temperature, double humidity) {
 
-        final double DEW_POINT_MULTIPLYING_CONSTANT = 17.625;
-        final double DEW_POINT_SUMMING_CONSTANT = 243.04;
+        /* 
+            Dew Point Formula Constants are assigned single-letter names for readiablity.
+            It has no meaning whatsoever, so giving more descriptive names is a detriment for such a complex equation.
+        */
+        final double A = 17.625;
+        final double B = 243.04;
 
         double dewPointTemperature;
 
@@ -68,8 +72,8 @@ public class Main {
 
         } else {
 
-            double magnusOutput = Math.log(humidity / 100) + ( (DEW_POINT_MULTIPLYING_CONSTANT * temperature) / (DEW_POINT_SUMMING_CONSTANT + temperature) );
-            dewPointTemperature = (DEW_POINT_SUMMING_CONSTANT * magnusOutput) / (DEW_POINT_MULTIPLYING_CONSTANT - magnusOutput);
+            double magnusOutput = Math.log(humidity / 100) + A*temperature / (B + temperature);
+            dewPointTemperature = B*magnusOutput / (A - magnusOutput);
 
         }
 
