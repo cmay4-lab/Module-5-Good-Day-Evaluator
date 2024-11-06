@@ -15,12 +15,12 @@ public class Main {
 
         boolean weatherIsInhabitable;
 
-        if (temperature < HABITABLE_TEMPERATURES_DOMAIN[0] || HABITABLE_HUMIDITY_DOMAIN[1] < temperature) {
+        if (temperature <= HABITABLE_TEMPERATURES_DOMAIN[0] || HABITABLE_HUMIDITY_DOMAIN[1] <= temperature) {
 
             weatherIsInhabitable = true;
             
 
-        } else if (humidity < HABITABLE_HUMIDITY_DOMAIN[0] || HABITABLE_HUMIDITY_DOMAIN[1] < humidity) {
+        } else if (humidity <= HABITABLE_HUMIDITY_DOMAIN[0] || HABITABLE_HUMIDITY_DOMAIN[1] <= humidity) {
 
             weatherIsInhabitable = true;
 
@@ -55,25 +55,61 @@ public class Main {
         return weatherIsNormal;
     }
 
-    private static double getDewPointTemperature(int temperature, double humidity) {
+    private static String validateTemperature(int temperature) {
 
-        /* 
-            Dew Point Formula Constants are assigned single-letter names for readiablity.
-            It has no meaning whatsoever, so giving more descriptive names is a detriment for such a complex equation.
-        */
-        final double A = 17.625;
-        final double B = 243.04;
+        String temperatureString;
 
-        double dewPointTemperature;
+        if (GoodDay.HABITABLE_TEMPERATURE_LOWER_LIMIT < temperature && temperature < GoodDay.HABITABLE_TEMPERATURE_UPPER_LIMIT)  {
 
-        if (humidity == 0) {
-
-            dewPointTemperature = temperature;
+            temperatureString = String.valueOf(temperature);
 
         } else {
 
+            temperatureString = "Invalid Temperature (n/a)";
+
+        }
+
+        return temperatureString;
+
+    }
+
+    private static String validateHumidity(int humidity) {
+
+        String humidityString;
+
+        if (GoodDay.HABITABLE_HUMIDITY_LOWER_LIMIT < humidity && humidity < GoodDay.HABITABLE_HUMIDITY_UPPER_LIMIT)  {
+
+            humidityString = String.valueOf(humidity);
+
+        } else {
+
+            humidityString = "Invalid Humidity (n/a)";
+
+        }
+
+        return humidityString;
+
+    }
+
+    private static String getDewPointTemperature(int temperature, double humidity) {
+
+        String dewPointTemperature;
+
+        if (validateTemperature(temperature).equals("Invalid Temperature (n/a)") || validateHumidity(temperature).equals("Invalid Humidity (n/a)")) {
+
+            dewPointTemperature = "Invalid Dew-Point Temperature (n/a)";
+
+        } else {
+
+            /*
+                Dew Point Formula Constants are assigned single-letter names for readability.
+                It has no meaning whatsoever, so giving more descriptive names is a detriment for such a complex equation.
+            */
+            final double A = 17.625;
+            final double B = 243.04;
+
             double magnusOutput = Math.log(humidity / 100) + A*temperature / (B + temperature);
-            dewPointTemperature = B*magnusOutput / (A - magnusOutput);
+            dewPointTemperature = String.valueOf(B*magnusOutput / (A - magnusOutput));
 
         }
 
@@ -85,71 +121,102 @@ public class Main {
 
         boolean weatherIsGood;
 
-        if (isWeatherInhabitable(goodDayEvaluator.getTemperature(), goodDayEvaluator.getHumidity())) {
+        if (!isWeatherNormal(goodDayEvaluator)) {
 
             weatherIsGood = false;
 
         } else {
 
-            final double CURRENT_DEW_POINT_TEMPERATURE = getDewPointTemperature(goodDayEvaluator.getTemperature(), goodDayEvaluator.getHumidity());
+            final String CURRENT_DEW_POINT_TEMPERATURE_STRING = getDewPointTemperature(goodDayEvaluator.getTemperature(), goodDayEvaluator.getHumidity());
+            final String PREFERRED_DEW_POINT_TEMPERATURE_STRING = getDewPointTemperature(goodDayEvaluator.getPreferredTemperature(), goodDayEvaluator.getPreferredHumidity());
 
-            
+            if (CURRENT_DEW_POINT_TEMPERATURE_STRING.equals("Invalid Dew-Point Temperature (n/a)") || PREFERRED_DEW_POINT_TEMPERATURE_STRING.equals("Invalid Dew-Point Temperature (n/a)")) {
 
-            final int PREFERRED_TEMPERATURE = goodDayEvaluator.getPreferredTemperature();
-            final double PREFERRED_HUMIDITY = goodDayEvaluator.getPreferredHumidity();
+                weatherIsGood = false;
 
-            
-            final double PREFERRED_DEW_POINT_TEMPERATURE = getDewPointTemperature(PREFERRED_TEMPERATURE, PREFERRED_HUMIDITY);
+            } else {
 
-            if (dewPointTemperature == preferredDewPointTemperature) {
+                final double CURRENT_DEW_POINT_TEMPERATURE = Double.parseDouble(CURRENT_DEW_POINT_TEMPERATURE_STRING);
+                final double PREFERRED_DEW_POINT_TEMPERATURE = Double.parseDouble(PREFERRED_DEW_POINT_TEMPERATURE_STRING);
+
+                final double SADNESS_LEVEL = Math.abs(CURRENT_DEW_POINT_TEMPERATURE - PREFERRED_DEW_POINT_TEMPERATURE);
+
+                if (SADNESS_LEVEL == 0) {
+
+                    weatherIsGood = true;
+
+                } else {
+
+                    final double MAX_DEW_POINT_TEMPERATURE = Double.parseDouble(getDewPointTemperature(99, 0.999999999999999));
+                    final double MIN_DEW_POINT_TEMPERATURE = Double.parseDouble(getDewPointTemperature(1,  0.000000000000001));
+                    final double MEAN_DEW_POINT_TEMPERATURE = (MAX_DEW_POINT_TEMPERATURE + MIN_DEW_POINT_TEMPERATURE) / 2;
+
+                    final double DANGER_LEVEL = Math.abs(CURRENT_DEW_POINT_TEMPERATURE - MEAN_DEW_POINT_TEMPERATURE);
+
+                    if (DANGER_LEVEL == 0) {
+
+                        weatherIsGood = true;
+
+                    }
+
+
+
+                }
+
+            }
+
+
+
+            if (PREFERENCE_DIFFERENCE == 0) {
 
                 weatherIsGood = true;
 
             } else {
 
-                final double MINIMUM_DEW_POINT_TEMPERATURE = getDewPointTemperature(GoodDay.HABITABLE_TEMPERATURE_LOWER_LIMIT, GoodDay.HABITABLE_HUMIDITY_LOWER_LIMIT);
-                final double MAXIMUM_DEW_POINT_TEMPERATURE = getDewPointTemperature(GoodDay.HABITABLE_TEMPERATURE_UPPER_LIMIT, GoodDay.HABITABLE_HUMIDITY_UPPER_LIMIT);
-                
-                double levelOfDiscomfort;
-                double levelOfSafety;
 
-                if (preferredDewPointTemperature <= MINIMUM_DEW_POINT_TEMPERATURE || preferredDewPointTemperature >= MAXIMUM_DEW_POINT_TEMPERATURE) {
 
-                    weatherIsGood = false;
 
-                } else if (dewPointTemperature > preferredDewPointTemperature) {
-
-                    levelOfDiscomfort = dewPointTemperature - preferredDewPointTemperature;
-                    levelOfSafety = preferredDewPointTemperature - MINIMUM_DEW_POINT_TEMPERATURE;
-
-                    if (levelOfSafety > levelOfDiscomfort) {
-
-                        weatherIsGood = true;
-    
-                    } else {
-    
-                        weatherIsGood = false;
-    
-                    }
-
-                } else {
-
-                    levelOfDiscomfort = preferredDewPointTemperature - dewPointTemperature;
-                    levelOfSafety = MAXIMUM_DEW_POINT_TEMPERATURE - preferredDewPointTemperature;
-
-                    if (levelOfSafety > levelOfDiscomfort) {
-
-                        weatherIsGood = true;
-    
-                    } else {
-    
-                        weatherIsGood = false;
-    
-                    }
-
-                }
+//                double levelOfSafety;
+//
+//                if (PREFERRED_DEW_POINT_TEMPERATURE <= MINIMUM_DEW_POINT_TEMPERATURE || PREFERRED_DEW_POINT_TEMPERATURE >= MAXIMUM_DEW_POINT_TEMPERATURE) {
+//
+//                    weatherIsGood = false;
+//
+//                } else if (CURRENT_DEW_POINT_TEMPERATURE > PREFERRED_DEW_POINT_TEMPERATURE) {
+//
+//                    levelOfDiscomfort = CURRENT_DEW_POINT_TEMPERATURE - PREFERRED_DEW_POINT_TEMPERATURE;
+//                    levelOfSafety = PREFERRED_DEW_POINT_TEMPERATURE - MINIMUM_DEW_POINT_TEMPERATURE;
+//
+//                    if (levelOfSafety > levelOfDiscomfort) {
+//
+//                        weatherIsGood = true;
+//
+//                    } else {
+//
+//                        weatherIsGood = false;
+//
+//                    }
+//
+//                } else {
+//
+//                    levelOfDiscomfort = preferredDewPointTemperature - dewPointTemperature;
+//                    levelOfSafety = MAXIMUM_DEW_POINT_TEMPERATURE - preferredDewPointTemperature;
+//
+//                    if (levelOfSafety > levelOfDiscomfort) {
+//
+//                        weatherIsGood = true;
+//
+//                    } else {
+//
+//                        weatherIsGood = false;
+//
+//                    }
+//
+//                }
 
             }
+
+
 
         }
 

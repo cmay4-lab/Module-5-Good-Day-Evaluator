@@ -6,10 +6,10 @@
 public class GoodDay {
 
     // Static Constants to what makes a "good day"
-    public static final int HABITABLE_TEMPERATURE_LOWER_LIMIT = 1;      // Stores the lowest temperature that the human body could possibly withstand for long periods fo time relative to the exponentially rising risk of frostbite (failure of homeostasis) as temperature increases.
-    public static final int HABITABLE_TEMPERATURE_UPPER_LIMIT = 39;     // Stores the hottest temperature that the human body could possibly withstand for long periods of time relative to the exponentially rising risk of heat stroke (failure of homeostasis) as temperature increases.
-    public static final double HABITABLE_HUMIDITY_LOWER_LIMIT = 1;      // Stores the percent of humidity that is impossibly dry: causing deteriorating health (excessive dehydration, extremely weaken immune system, skin damage, etc.) no matter the temperature.
-    public static final double HABITABLE_HUMIDITY_UPPER_LIMIT = 99;     // Stores the percent of humidity that disables the human body's ability to sweat (eventually causing failure of homeostasis).
+    public static final int HABITABLE_TEMPERATURE_LOWER_LIMIT = 0;      // Stores the lowest temperature that the human body could possibly withstand for long periods fo time relative to the exponentially rising risk of frostbite (failure of homeostasis) as temperature increases.
+    public static final int HABITABLE_TEMPERATURE_UPPER_LIMIT = 40;     // Stores the hottest temperature that the human body could possibly withstand for long periods of time relative to the exponentially rising risk of heat stroke (failure of homeostasis) as temperature increases.
+    public static final double HABITABLE_HUMIDITY_LOWER_LIMIT = 0;      // Stores the percent of humidity that is impossibly dry: causing deteriorating health (excessive dehydration, extremely weaken immune system, skin damage, etc.) no matter the temperature.
+    public static final double HABITABLE_HUMIDITY_UPPER_LIMIT = 100;     // Stores the percent of humidity that disables the human body's ability to sweat (eventually causing failure of homeostasis).
 
     private int temperature;                    // Stores temperature in Celsius.
     private double humidity;                    // Stores humidity in percent.
