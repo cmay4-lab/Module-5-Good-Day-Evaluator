@@ -151,11 +151,22 @@ public class Main {
                     final double MIN_DEW_POINT_TEMPERATURE = Double.parseDouble(getDewPointTemperature(1,  0.000000000000001));
                     final double MEAN_DEW_POINT_TEMPERATURE = (MAX_DEW_POINT_TEMPERATURE + MIN_DEW_POINT_TEMPERATURE) / 2;
 
-                    final double DANGER_LEVEL = Math.abs(CURRENT_DEW_POINT_TEMPERATURE - MEAN_DEW_POINT_TEMPERATURE);
-
-                    if (DANGER_LEVEL == 0) {
+                    if (CURRENT_DEW_POINT_TEMPERATURE == MEAN_DEW_POINT_TEMPERATURE) {
 
                         weatherIsGood = true;
+
+                    } else if (CURRENT_DEW_POINT_TEMPERATURE < MEAN_DEW_POINT_TEMPERATURE) {
+
+                        final double SAFETY_LEVEL = Math.abs(CURRENT_DEW_POINT_TEMPERATURE - MIN_DEW_POINT_TEMPERATURE); 
+
+                        if (SAFETY_LEVEL < SADNESS_LEVEL)
+                     
+
+
+                    } else {
+
+
+                       
 
                     }
 
@@ -167,54 +178,54 @@ public class Main {
 
 
 
-            if (PREFERENCE_DIFFERENCE == 0) {
+            // if (PREFERENCE_DIFFERENCE == 0) {
 
-                weatherIsGood = true;
+            //     weatherIsGood = true;
 
-            } else {
-
-
+            // } else {
 
 
-//                double levelOfSafety;
-//
-//                if (PREFERRED_DEW_POINT_TEMPERATURE <= MINIMUM_DEW_POINT_TEMPERATURE || PREFERRED_DEW_POINT_TEMPERATURE >= MAXIMUM_DEW_POINT_TEMPERATURE) {
-//
-//                    weatherIsGood = false;
-//
-//                } else if (CURRENT_DEW_POINT_TEMPERATURE > PREFERRED_DEW_POINT_TEMPERATURE) {
-//
-//                    levelOfDiscomfort = CURRENT_DEW_POINT_TEMPERATURE - PREFERRED_DEW_POINT_TEMPERATURE;
-//                    levelOfSafety = PREFERRED_DEW_POINT_TEMPERATURE - MINIMUM_DEW_POINT_TEMPERATURE;
-//
-//                    if (levelOfSafety > levelOfDiscomfort) {
-//
-//                        weatherIsGood = true;
-//
-//                    } else {
-//
-//                        weatherIsGood = false;
-//
-//                    }
-//
-//                } else {
-//
-//                    levelOfDiscomfort = preferredDewPointTemperature - dewPointTemperature;
-//                    levelOfSafety = MAXIMUM_DEW_POINT_TEMPERATURE - preferredDewPointTemperature;
-//
-//                    if (levelOfSafety > levelOfDiscomfort) {
-//
-//                        weatherIsGood = true;
-//
-//                    } else {
-//
-//                        weatherIsGood = false;
-//
-//                    }
-//
-//                }
 
-            }
+
+            //    double levelOfSafety;
+
+            //    if (PREFERRED_DEW_POINT_TEMPERATURE <= MINIMUM_DEW_POINT_TEMPERATURE || PREFERRED_DEW_POINT_TEMPERATURE >= MAXIMUM_DEW_POINT_TEMPERATURE) {
+
+            //        weatherIsGood = false;
+
+            //    } else if (CURRENT_DEW_POINT_TEMPERATURE > PREFERRED_DEW_POINT_TEMPERATURE) {
+
+            //        levelOfDiscomfort = CURRENT_DEW_POINT_TEMPERATURE - PREFERRED_DEW_POINT_TEMPERATURE;
+            //        levelOfSafety = PREFERRED_DEW_POINT_TEMPERATURE - MINIMUM_DEW_POINT_TEMPERATURE;
+
+            //        if (levelOfSafety > levelOfDiscomfort) {
+
+            //            weatherIsGood = true;
+
+            //        } else {
+
+            //            weatherIsGood = false;
+
+            //        }
+
+            //    } else {
+
+            //        levelOfDiscomfort = preferredDewPointTemperature - dewPointTemperature;
+            //        levelOfSafety = MAXIMUM_DEW_POINT_TEMPERATURE - preferredDewPointTemperature;
+
+            //        if (levelOfSafety > levelOfDiscomfort) {
+
+            //            weatherIsGood = true;
+
+            //        } else {
+
+            //            weatherIsGood = false;
+
+            //        }
+
+            //    }
+
+            
 
 
 
