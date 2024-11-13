@@ -1,4 +1,5 @@
 import java.lang.Math;
+import java.util.Objects;
 
 public class Main {
 
@@ -73,7 +74,7 @@ public class Main {
 
     }
 
-    private static String validateHumidity(int humidity) {
+    private static String validateHumidity(double humidity) {
 
         String humidityString;
 
@@ -95,7 +96,7 @@ public class Main {
 
         String dewPointTemperature;
 
-        if (validateTemperature(temperature).equals("Invalid Temperature (n/a)") || validateHumidity(temperature).equals("Invalid Humidity (n/a)")) {
+        if (validateTemperature(temperature).equals("Invalid Temperature (n/a)") || validateHumidity(humidity).equals("Invalid Humidity (n/a)")) {
 
             dewPointTemperature = "Invalid Dew-Point Temperature (n/a)";
 
@@ -147,7 +148,8 @@ public class Main {
 
                 } else {
 
-                    final double MAX_DEW_POINT_TEMPERATURE = Double.parseDouble(getDewPointTemperature(99, 0.999999999999999));
+
+                    final double MAX_DEW_POINT_TEMPERATURE = Double.parseDouble(getDewPointTemperature(39, 0.999999999999999));
                     final double MIN_DEW_POINT_TEMPERATURE = Double.parseDouble(getDewPointTemperature(1,  0.000000000000001));
                     final double MEAN_DEW_POINT_TEMPERATURE = (MAX_DEW_POINT_TEMPERATURE + MIN_DEW_POINT_TEMPERATURE) / 2;
 
@@ -157,26 +159,21 @@ public class Main {
 
                     } else if (CURRENT_DEW_POINT_TEMPERATURE < MEAN_DEW_POINT_TEMPERATURE) {
 
-                        final double SAFETY_LEVEL = Math.abs(CURRENT_DEW_POINT_TEMPERATURE - MIN_DEW_POINT_TEMPERATURE); 
+                        final double SAFETY_LEVEL = Math.abs(CURRENT_DEW_POINT_TEMPERATURE - MIN_DEW_POINT_TEMPERATURE);
 
-                        if (SAFETY_LEVEL < SADNESS_LEVEL)
-                     
-
+                        weatherIsGood = SAFETY_LEVEL / 2 >= SADNESS_LEVEL;
 
                     } else {
 
+                        final double SAFETY_LEVEL = Math.abs(CURRENT_DEW_POINT_TEMPERATURE - MAX_DEW_POINT_TEMPERATURE);
 
-                       
+                        weatherIsGood = SAFETY_LEVEL / 2 >= SADNESS_LEVEL;
 
                     }
-
-
 
                 }
 
             }
-
-
 
             // if (PREFERENCE_DIFFERENCE == 0) {
 
@@ -225,10 +222,6 @@ public class Main {
 
             //    }
 
-            
-
-
-
         }
 
         return weatherIsGood;
@@ -242,7 +235,7 @@ public class Main {
         String leastFavoriteMeal = goodDayEvaluator.getLeastFavoriteMeal();
         String dinnerMeal = goodDayEvaluator.getDinnerMeal();
 
-        if (dinnerMeal == "" || dinnerMeal.equalsIgnoreCase(leastFavoriteMeal)) {
+        if (Objects.equals(dinnerMeal, "") || dinnerMeal.equalsIgnoreCase(leastFavoriteMeal)) {
 
             foodIsGood = false;
 
@@ -254,19 +247,19 @@ public class Main {
 
     private static boolean isTodayGood(GoodDay goodDayEvaluator) {
 
-        int happinessLevel;
+        double happinessLevel = 0;
+        boolean todayIsGood;
 
         final boolean WEATHER_IS_NOT_NORMAL = !isWeatherNormal(goodDayEvaluator);
 
         if (WEATHER_IS_NOT_NORMAL) {
 
-            happinessLevel = 0;
+            todayIsGood = false;
 
         } else {
 
             final boolean WEATHER_IS_GOOD = isWeatherGood(goodDayEvaluator);
             final boolean FOOD_IS_GOOD = isFoodGood(goodDayEvaluator);
-
 
             if (WEATHER_IS_GOOD) {
 
@@ -274,64 +267,44 @@ public class Main {
 
             }
 
+            if (FOOD_IS_GOOD && !goodDayEvaluator.getDinnerMeal().isBlank()) {
 
-        }
+                if (Objects.equals(goodDayEvaluator.getFavoriteDinnerMeal(), goodDayEvaluator.getDinnerMeal())) {
 
-        if (isWeatherGood(goodDayEvaluator)) {
+                    happinessLevel += 1.5;
 
-            happinessLevel++;
-
-        }
-
-        if (isFoodGood(goodDayEvaluator)) {
-
-            if (!goodDayEvaluator.getDinnerMeal().isBlank()) {
-
-                if (goodDayEvaluator.getFavoriteDinnerMeal() == goodDayEvaluator.getDinnerMeal()) {
+                } else {
 
                     happinessLevel++;
-    
-                } else {
-    
-                    happinessLevel += 0.5;
-    
+
                 }
 
             }
 
-        }
+            if (goodDayEvaluator.getIsHomeworkDone()) {
 
-        if (goodDayEvaluator.getIsHomeworkDone()) {
+                happinessLevel++;
 
-            happinessLevel++;
+            } else {
 
-        } else {
+                double mostLikelyHomeworkGrade = 0;
 
-            double mostLikelyHomeworkGrade = 1;
+                switch (goodDayEvaluator.getHomeworkDifficulty()) {
 
-            switch (goodDayEvaluator.getHomeworkDifficulty()) {
-    
-                case "Easy" -> mostLikelyHomeworkGrade = 0.9;
-                case "Medium" -> mostLikelyHomeworkGrade = 0.8;
-                case "Hard" -> mostLikelyHomeworkGrade = 0.7;
-                case "Very Hard" -> mostLikelyHomeworkGrade = 0.6;
-                default -> mostLikelyHomeworkGrade = 1;
-    
+                    case "Easy" -> mostLikelyHomeworkGrade = 0.9;
+                    case "Medium" -> mostLikelyHomeworkGrade = 0.8;
+                    case "Hard" -> mostLikelyHomeworkGrade = 0.7;
+                    case "Very Hard" -> mostLikelyHomeworkGrade = 0.6;
+
+                }
+
+                happinessLevel += 2*mostLikelyHomeworkGrade / 3.0;
+
             }
 
-            happinessLevel += mostLikelyHomeworkGrade * 0.3;
+            double happinessPercent = (100*happinessLevel) / 3.0;
 
-        }
-
-        double happinessPercent = (100*happinessLevel) / 4;
-
-        if (happinessPercent == 0) {
-
-            todayIsGood = true;
-
-        } else {
-
-            todayIsGood = false;
+            todayIsGood = happinessPercent > 2.0 / 3.0;
 
         }
 
